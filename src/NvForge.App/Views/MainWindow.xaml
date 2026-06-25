@@ -1,0 +1,241 @@
+<Window x:Class="NvForge.App.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding Title}"
+        Height="760" Width="1000" MinHeight="560" MinWidth="820"
+        Background="{StaticResource BgBrush}"
+        TextElement.Foreground="{StaticResource FgBrush}"
+        TextElement.FontFamily="Segoe UI" FontSize="13"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="{StaticResource PanelBrush}" Padding="20,14"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+            <StackPanel Orientation="Horizontal">
+                <Border Background="{StaticResource AccentBrush}" Width="6" Height="34" CornerRadius="3" Margin="0,0,12,0" />
+                <StackPanel>
+                    <TextBlock Text="NvForge" Style="{StaticResource H1}" />
+                    <TextBlock Text="All-in-one NVIDIA GPU manager" Style="{StaticResource Muted}" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Warning banner -->
+        <Border Grid.Row="1" Background="#3A2E00" Padding="16,10"
+                BorderBrush="{StaticResource WarnBrush}" BorderThickness="0,0,0,1"
+                Visibility="{Binding ShowBanner, Converter={StaticResource BoolToVis}}">
+            <TextBlock Text="{Binding BannerText}" Foreground="{StaticResource WarnBrush}" TextWrapping="Wrap" />
+        </Border>
+
+        <!-- Tabs -->
+        <TabControl Grid.Row="2" Background="{StaticResource BgBrush}" BorderThickness="0" Padding="20,16">
+
+            <!-- ===== Dashboard ===== -->
+            <TabItem Header="Dashboard">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Detected GPUs" Style="{StaticResource H1}" Margin="0,0,0,12" />
+
+                        <TextBlock Style="{StaticResource Muted}" Margin="0,0,0,12"
+                                   Text="No NVIDIA GPU detected on this system."
+                                   Visibility="{Binding NoGpus, Converter={StaticResource BoolToVis}}" />
+
+                        <ItemsControl ItemsSource="{Binding Gpus}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource Card}">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Name}" Style="{StaticResource H2}" Margin="0,0,0,8" />
+                                            <UniformGrid Columns="3" Margin="0,0,0,6">
+                                                <StackPanel>
+                                                    <TextBlock Text="Form factor" Style="{StaticResource Muted}" FontSize="11" />
+                                                    <TextBlock Text="{Binding FormFactorText}" />
+                                                </StackPanel>
+                                                <StackPanel>
+                                                    <TextBlock Text="Video memory" Style="{StaticResource Muted}" FontSize="11" />
+                                                    <TextBlock Text="{Binding VramText}" />
+                                                </StackPanel>
+                                                <StackPanel>
+                                                    <TextBlock Text="Driver" Style="{StaticResource Muted}" FontSize="11" />
+                                                    <TextBlock Text="{Binding DriverVersionText}" TextWrapping="Wrap" />
+                                                </StackPanel>
+                                            </UniformGrid>
+                                            <TextBlock Text="Tuning capabilities" Style="{StaticResource Muted}" FontSize="11" Margin="0,6,0,0" />
+                                            <TextBlock Text="{Binding CapabilitiesText}" TextWrapping="Wrap" />
+                                            <TextBlock Text="{Binding LockNote}" Foreground="{StaticResource WarnBrush}"
+                                                       TextWrapping="Wrap" Margin="0,8,0,0"
+                                                       Visibility="{Binding IsVendorLocked, Converter={StaticResource BoolToVis}}" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock Style="{StaticResource Muted}" Margin="0,4,0,0"
+                                   Text="Live sensors (clocks, temps, fans, power) arrive in the next phase via NVML." />
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- ===== Driver Customization ===== -->
+            <TabItem Header="Driver Customization" DataContext="{Binding Driver}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Driver Customization" Style="{StaticResource H1}" Margin="0,0,0,4" />
+                        <TextBlock Text="{Binding TargetGpuText}" Style="{StaticResource Muted}" Margin="0,0,0,12" />
+
+                        <!-- Step 1: NVCleanstall -->
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Step 1 — Customize &amp; install the driver with NVCleanstall" Style="{StaticResource H2}" Margin="0,0,0,8" />
+                                <TextBlock Text="{Binding NvCleanstallStatus}" Style="{StaticResource Muted}" Margin="0,0,0,12" />
+                                <WrapPanel>
+                                    <Button Content="Launch NVCleanstall" Command="{Binding LaunchNvCleanstallCommand}"
+                                            IsEnabled="{Binding NvCleanstallFound}" />
+                                    <Button Content="Get NVCleanstall" Style="{StaticResource SecondaryButton}" Command="{Binding GetNvCleanstallCommand}" />
+                                    <Button Content="Re-check" Style="{StaticResource SecondaryButton}" Command="{Binding RefreshNvCleanstallCommand}" />
+                                    <Button Content="Open NVIDIA driver page" Style="{StaticResource SecondaryButton}" Command="{Binding OpenDriversPageCommand}" />
+                                </WrapPanel>
+                                <TextBlock Text="{Binding ActionStatus}" Style="{StaticResource Muted}" Margin="0,10,0,0" />
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Recommendations -->
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Recommended components" Style="{StaticResource H2}" Margin="0,0,0,4" />
+                                <TextBlock Style="{StaticResource Muted}" Margin="0,0,0,12"
+                                           Text="Use this as a guide for the component screen inside NVCleanstall." />
+                                <ItemsControl ItemsSource="{Binding Recommendations}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,0,0,10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="64" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <Border Grid.Column="0" VerticalAlignment="Top" CornerRadius="4" Padding="6,2" Margin="0,2,10,0">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsStrip}" Value="True">
+                                                                    <Setter Property="Background" Value="{StaticResource StripBrush}" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                    <TextBlock Text="{Binding Action}" Foreground="#10130A" FontWeight="SemiBold"
+                                                               FontSize="11" HorizontalAlignment="Center" />
+                                                </Border>
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBlock>
+                                                        <Run Text="{Binding Name}" FontWeight="SemiBold" />
+                                                        <Run Text="  ·  " Foreground="{StaticResource MutedBrush}" />
+                                                        <Run Text="{Binding Category}" Foreground="{StaticResource MutedBrush}" FontSize="11" />
+                                                    </TextBlock>
+                                                    <TextBlock Text="{Binding Reason}" Style="{StaticResource Muted}" FontSize="12" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Step 2: Tweaks -->
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Step 2 — Post-install tweaks (reversible)" Style="{StaticResource H2}" Margin="0,0,0,4" />
+                                <TextBlock Style="{StaticResource Muted}" Margin="0,0,0,12"
+                                           Text="Each tweak backs up the original state first. Use Restore to undo any change exactly." />
+                                <ItemsControl ItemsSource="{Binding Tweaks}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="{StaticResource PanelAltBrush}" CornerRadius="6" Padding="14" Margin="0,0,0,10">
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" />
+                                                    <TextBlock Text="{Binding Description}" Style="{StaticResource Muted}" FontSize="12" Margin="0,4,0,8" />
+                                                    <WrapPanel>
+                                                        <Button Content="Apply" Command="{Binding ApplyCommand}" />
+                                                        <Button Content="Restore" Style="{StaticResource SecondaryButton}" Command="{Binding RestoreCommand}" />
+                                                    </WrapPanel>
+                                                    <TextBlock Text="{Binding Status}" Style="{StaticResource Muted}" FontSize="12" Margin="0,8,0,0" />
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- ===== Diagnostics ===== -->
+            <TabItem Header="Diagnostics" DataContext="{Binding Diagnostics}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <WrapPanel Grid.Row="0" Margin="0,0,0,12">
+                        <Button Content="Refresh" Command="{Binding RefreshCommand}" />
+                        <Button Content="Copy" Style="{StaticResource SecondaryButton}" Command="{Binding CopyCommand}" />
+                        <Button Content="Save…" Style="{StaticResource SecondaryButton}" Command="{Binding SaveCommand}" />
+                    </WrapPanel>
+                    <TextBox Grid.Row="1" Text="{Binding ReportText, Mode=OneWay}" IsReadOnly="True"
+                             FontFamily="Consolas" FontSize="12"
+                             Background="{StaticResource PanelBrush}" Foreground="{StaticResource FgBrush}"
+                             BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                             VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                             TextWrapping="NoWrap" Padding="10" />
+                </Grid>
+            </TabItem>
+
+            <!-- ===== About ===== -->
+            <TabItem Header="About">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="About NvForge" Style="{StaticResource H1}" Margin="0,0,0,8" />
+                        <TextBlock Style="{StaticResource Muted}" Margin="0,0,0,6">
+                            <Run Text="Version" /><Run Text=" " /><Run Text="{Binding AppVersion}" />
+                        </TextBlock>
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="What this is" Style="{StaticResource H2}" Margin="0,0,0,6" />
+                                <TextBlock Style="{StaticResource Muted}"
+                                           Text="NvForge is an all-in-one NVIDIA GPU manager being built in phases. This release (Phase 1) covers GPU detection and driver customization: it detects your GPU, recommends what to strip, helps you run NVCleanstall, and applies reversible privacy/update tweaks." />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Coming next" Style="{StaticResource H2}" Margin="0,0,0,6" />
+                                <TextBlock Style="{StaticResource Muted}"
+                                           Text="• Live monitoring (clocks, temps, fans, power) via NVML&#x0a;• Overclocking / fan curves via the official NVAPI SDK&#x0a;• Full Windows performance tweaks (HAGS, power plans, MSI mode, control-panel settings)" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Honest notes" Style="{StaticResource H2}" Margin="0,0,0,6" />
+                                <TextBlock Style="{StaticResource Muted}"
+                                           Text="• Laptop GPUs (like the RTX 5070 Ti mobile) usually have power/voltage locked by the vendor — those controls will be limited.&#x0a;• NVCleanstall is third-party freeware; NvForge detects and launches your own copy, it does not bundle or modify it.&#x0a;• Driver tweaks require Administrator and edit the registry / services / scheduled tasks — always reversible via Restore." />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

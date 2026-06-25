@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- Allows compiling the net8.0-windows / WPF projects on the Linux CI/dev box.
+         Running them still requires Windows + an NVIDIA GPU. -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <Product>NvForge</Product>
+    <Company>NvForge</Company>
+    <Version>0.1.0</Version>
+    <Authors>Nuk3er</Authors>
+  </PropertyGroup>
+</Project>

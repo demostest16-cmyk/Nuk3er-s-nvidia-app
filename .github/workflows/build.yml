@@ -1,0 +1,66 @@
+name: build
+
+on:
+  push:
+    branches:
+      - main
+      - "claude/**"
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore
+        run: dotnet restore NvForge.sln
+
+      - name: Build
+        run: dotnet build NvForge.sln -c Release --no-restore
+
+      - name: Test
+        run: dotnet test tests/NvForge.Core.Tests/NvForge.Core.Tests.csproj -c Release --no-build --verbosity normal
+
+      - name: Publish single-file EXE
+        run: >
+          dotnet publish src/NvForge.App/NvForge.App.csproj
+          -c Release -r win-x64 --self-contained true
+          -p:PublishSingleFile=true -p:PublishTrimmed=false
+          -o publish
+
+      - name: Upload EXE artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NvForge-win-x64
+          path: publish/NvForge.exe
+          if-no-files-found: error
+
+  release:
+    # Attach the EXE to a GitHub Release when a version tag is pushed.
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Publish
+        run: >
+          dotnet publish src/NvForge.App/NvForge.App.csproj
+          -c Release -r win-x64 --self-contained true
+          -p:PublishSingleFile=true -p:PublishTrimmed=false
+          -o publish
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: publish/NvForge.exe
