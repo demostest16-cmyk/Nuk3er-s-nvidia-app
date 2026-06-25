@@ -47,9 +47,11 @@ jobs:
           if-no-files-found: error
 
   release:
-    # Attach the EXE to a GitHub Release when a version tag (vX.Y.Z) is pushed.
+    # Publishes a GitHub Release with the EXE. Runs when a vX.Y.Z tag is pushed,
+    # or when the workflow is dispatched manually / via API (the action creates
+    # the tag server-side, so no tag push is required).
     needs: build
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
     runs-on: windows-latest
     permissions:
       contents: write
@@ -67,7 +69,8 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          name: NvForge ${{ github.ref_name }} (beta)
+          tag_name: v0.5.0
+          name: NvForge v0.5.0 (beta)
           prerelease: true
           generate_release_notes: true
           files: publish/NvForge.exe
