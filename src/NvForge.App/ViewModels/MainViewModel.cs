@@ -10,6 +10,8 @@ namespace NvForge.App.ViewModels;
 /// <summary>Root view model for the main window.</summary>
 public partial class MainViewModel : ObservableObject
 {
+    private readonly IDriverSettingsService _driverSettings;
+
     public MainViewModel(
         IReadOnlyList<GpuInfo> gpus,
         string source,
@@ -20,16 +22,19 @@ public partial class MainViewModel : ObservableObject
         RegistryTweakService? tweakService,
         IGpuMonitor monitor,
         IGpuTuner tuner,
+        IDriverSettingsService driverSettings,
         OverclockProfileStore profiles,
         string appVersion)
     {
         AppVersion = appVersion;
+        _driverSettings = driverSettings;
         Gpus = new ObservableCollection<GpuCardViewModel>(gpus.Select(g => new GpuCardViewModel(g)));
 
         var primaryGpu = gpus.Count > 0 ? gpus[0] : null;
         Driver = new DriverViewModel(primaryGpu, locator, download, tweakService, simulated);
         Monitoring = new MonitoringViewModel(monitor);
         Tuning = new TuningViewModel(tuner, profiles);
+        NvSettings = new NvSettingsViewModel(driverSettings);
         WindowsTweaks = new WindowsTweaksViewModel(tweakService, simulated, primaryGpu?.PnpDeviceId);
         Diagnostics = new DiagnosticsViewModel(gpus, source, elevated, simulated, appVersion);
 
@@ -61,6 +66,8 @@ public partial class MainViewModel : ObservableObject
 
     public TuningViewModel Tuning { get; }
 
+    public NvSettingsViewModel NvSettings { get; }
+
     public WindowsTweaksViewModel WindowsTweaks { get; }
 
     public DiagnosticsViewModel Diagnostics { get; }
@@ -70,6 +77,7 @@ public partial class MainViewModel : ObservableObject
     {
         Monitoring.Stop();
         Tuning.Dispose();
+        _driverSettings.Dispose();
     }
 
     public bool ShowBanner { get; }

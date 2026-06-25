@@ -3,9 +3,10 @@
 **All-in-one NVIDIA GPU manager for Windows** — for both desktop GPUs (RTX 4060)
 and laptop/mobile GPUs (RTX 5070 Ti Laptop GPU). Built in phases.
 
-> **Status: Phase 4** — GPU detection, driver customization, live monitoring,
-> overclocking/tuning (experimental), and a **reversible Windows performance
-> tweaks suite**. All four roadmap pillars are now in the app.
+> **Status: Phase 5** — GPU detection, driver customization, live monitoring,
+> overclocking/tuning (experimental), a reversible Windows performance tweaks
+> suite, and **one-click NVIDIA Control Panel settings**. All four roadmap
+> pillars plus driver-level tuning are in the app.
 
 ## What it does today
 
@@ -21,6 +22,9 @@ and laptop/mobile GPUs (RTX 5070 Ti Laptop GPU). Built in phases.
   Accelerated GPU Scheduling, Ultimate Performance power plan, increased TDR
   delay, disable Fullscreen Optimizations, disable Game DVR/Game Bar, and MSI
   interrupt mode for your GPU.
+- **NVIDIA Control Panel settings** (via NVAPI, *experimental*) — one-click
+  Optimize/Restore for Power Management Mode (Prefer Max Performance), Low
+  Latency, Vertical Sync, and Threaded Optimization.
 - **Driver Customization**
   - Finds your copy of **NVCleanstall** (or links you to the official download)
     and launches it.
@@ -65,11 +69,11 @@ In simulate mode all destructive actions are disabled — useful for a quick loo
 | 1 ✅ | Detection + driver customization |
 | 2 ✅ | Live monitoring (clocks, temps, fans, power) via NVML |
 | 3 ✅ | Overclocking (core/memory offsets) via NVAPI + profiles — *experimental* |
-| 4 ✅ | Windows tweaks: HAGS, Ultimate Performance, TDR, FSO, Game DVR, MSI mode (this release) |
+| 4 ✅ | Windows tweaks: HAGS, Ultimate Performance, TDR, FSO, Game DVR, MSI mode |
+| 5 ✅ | NVIDIA Control Panel settings (power mode, low latency, V-Sync, threaded opt.) via NVAPI DRS — *experimental* (this release) |
 
-Possible follow-ups: NVIDIA Control Panel settings (low-latency / power mode) via
-NVAPI, fan-curve editor, power-limit control, and on-hardware validation of the
-overclocking write path.
+Possible follow-ups: a fan-curve editor, power-limit control (likely via NVML's
+simpler API), and on-hardware validation of the NVAPI write paths.
 
 > **Overclocking is experimental.** The NVAPI clock-offset write path is built
 > from the public NVAPI definitions but has not yet been validated on real

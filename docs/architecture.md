@@ -91,12 +91,16 @@ Strategy:
 - **Phase 4 ✅** Windows tweaks suite (HAGS, Ultimate Performance power plan, TDR
   delay, fullscreen-optimization, Game DVR, MSI mode), all reversible via the
   registry/task/service/power-scheme tweak engine.
+- **Phase 5 ✅ (experimental)** NVIDIA Control Panel settings via NVAPI DRS
+  (`NvForge.NvApi/NvApiDriverSettings.cs`): Power Management Mode, Low Latency,
+  V-Sync, Threaded Optimization — one-click Optimize/Restore on the global base
+  profile, applied-state read live from the driver.
 
 ### Possible follow-ups
 
-NVIDIA Control Panel settings (low-latency / power mode) via NVAPI DRS, a
-fan-curve editor and power-limit control, an elevated broker process, and
-on-hardware validation of the NVAPI overclock write path.
+A fan-curve editor and power-limit control (the latter likely via NVML's simpler
+`nvmlDeviceSetPowerManagementLimit`), an elevated broker process, and on-hardware
+validation of the NVAPI write paths.
 
 ### Future hardening
 

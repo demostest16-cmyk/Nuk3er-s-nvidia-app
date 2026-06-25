@@ -6,6 +6,7 @@ using NvForge.Core.Abstractions;
 using NvForge.Core.Gpu;
 using NvForge.Core.Models;
 using NvForge.Core.Tweaks;
+using NvForge.Core.DriverSettings;
 using NvForge.Core.Monitoring;
 using NvForge.Core.Tuning;
 using NvForge.DriverCustomizer;
@@ -59,6 +60,7 @@ public static class AppHost
         var tweakService = new RegistryTweakService(new TweakBackupStore(BackupDirectory));
         IGpuMonitor monitor = simulated ? new MockGpuMonitor() : new NvmlGpuMonitor();
         IGpuTuner tuner = simulated ? new MockGpuTuner() : new NvApiGpuTuner();
+        IDriverSettingsService driverSettings = simulated ? new MockDriverSettingsService() : new NvApiDriverSettings();
         var profiles = new OverclockProfileStore(Path.Combine(DataDirectory, "profiles.json"));
 
         Log.Information(
@@ -67,7 +69,7 @@ public static class AppHost
             monitor.Available ? monitor.SourceName : "unavailable",
             tuner.Available ? tuner.SourceName : "unavailable");
 
-        return new MainViewModel(gpus, provider.SourceName, elevated, simulated, locator, download, tweakService, monitor, tuner, profiles, AppVersion);
+        return new MainViewModel(gpus, provider.SourceName, elevated, simulated, locator, download, tweakService, monitor, tuner, driverSettings, profiles, AppVersion);
     }
 
     public static string AppVersion =>
