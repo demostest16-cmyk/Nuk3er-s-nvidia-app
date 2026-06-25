@@ -3,14 +3,17 @@
 **All-in-one NVIDIA GPU manager for Windows** — for both desktop GPUs (RTX 4060)
 and laptop/mobile GPUs (RTX 5070 Ti Laptop GPU). Built in phases.
 
-> **Status: Phase 1** — GPU detection + driver customization (NVCleanstall
-> orchestration and reversible privacy/update tweaks). Live monitoring,
-> overclocking, and the full Windows-tweaks suite are on the roadmap below.
+> **Status: Phase 2** — GPU detection, driver customization, and **live
+> monitoring**. Overclocking and the full Windows-tweaks suite are on the
+> roadmap below.
 
 ## What it does today
 
 - **Detects your NVIDIA GPU(s)** and tells desktop from laptop/mobile, with VRAM,
   driver version, and the tuning capabilities that part actually supports.
+- **Live monitoring** (via NVML) — clocks, temperature, fan, power, GPU/memory
+  utilization, and VRAM, updating every second with min/avg/max, a usage history
+  graph, and optional CSV logging.
 - **Driver Customization**
   - Finds your copy of **NVCleanstall** (or links you to the official download)
     and launches it.
@@ -52,8 +55,8 @@ In simulate mode all destructive actions are disabled — useful for a quick loo
 
 | Phase | Feature |
 |---|---|
-| 1 ✅ | Detection + driver customization (this release) |
-| 2 | Live monitoring (clocks, temps, fans, power) via NVML + charts |
+| 1 ✅ | Detection + driver customization |
+| 2 ✅ | Live monitoring (clocks, temps, fans, power) via NVML (this release) |
 | 3 | Overclocking / fan curves via the official NVAPI SDK + per-GPU profiles |
 | 4 | Full Windows tweaks (HAGS, Ultimate Performance, MSI mode, NVCP settings) |
 

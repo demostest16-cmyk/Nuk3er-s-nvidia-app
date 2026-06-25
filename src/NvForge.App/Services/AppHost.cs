@@ -6,8 +6,10 @@ using NvForge.Core.Abstractions;
 using NvForge.Core.Gpu;
 using NvForge.Core.Models;
 using NvForge.Core.Tweaks;
+using NvForge.Core.Monitoring;
 using NvForge.DriverCustomizer;
 using NvForge.Hardware;
+using NvForge.Nvml;
 using Serilog;
 
 namespace NvForge.App.Services;
@@ -53,12 +55,13 @@ public static class AppHost
         var locator = new NvCleanstallLocator();
         var download = new DriverDownloadService();
         var tweakService = new RegistryTweakService(new TweakBackupStore(BackupDirectory));
+        IGpuMonitor monitor = simulated ? new MockGpuMonitor() : new NvmlGpuMonitor();
 
         Log.Information(
-            "NvForge starting. Simulated={Simulated} Elevated={Elevated} GPUs={Count} Source={Source}",
-            simulated, elevated, gpus.Count, provider.SourceName);
+            "NvForge starting. Simulated={Simulated} Elevated={Elevated} GPUs={Count} Source={Source} Monitor={Monitor}",
+            simulated, elevated, gpus.Count, provider.SourceName, monitor.Available ? monitor.SourceName : "unavailable");
 
-        return new MainViewModel(gpus, provider.SourceName, elevated, simulated, locator, download, tweakService, AppVersion);
+        return new MainViewModel(gpus, provider.SourceName, elevated, simulated, locator, download, tweakService, monitor, AppVersion);
     }
 
     public static string AppVersion =>

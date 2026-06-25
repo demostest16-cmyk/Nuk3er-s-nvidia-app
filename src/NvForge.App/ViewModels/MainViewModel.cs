@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using NvForge.Core.Abstractions;
 using NvForge.Core.Models;
 using NvForge.DriverCustomizer;
 
@@ -16,6 +17,7 @@ public partial class MainViewModel : ObservableObject
         NvCleanstallLocator locator,
         DriverDownloadService download,
         RegistryTweakService? tweakService,
+        IGpuMonitor monitor,
         string appVersion)
     {
         AppVersion = appVersion;
@@ -23,6 +25,7 @@ public partial class MainViewModel : ObservableObject
 
         var primaryGpu = gpus.Count > 0 ? gpus[0] : null;
         Driver = new DriverViewModel(primaryGpu, locator, download, tweakService, simulated);
+        Monitoring = new MonitoringViewModel(monitor);
         Diagnostics = new DiagnosticsViewModel(gpus, source, elevated, simulated, appVersion);
 
         var banners = new List<string>();
@@ -48,6 +51,8 @@ public partial class MainViewModel : ObservableObject
     public bool NoGpus => !HasGpus;
 
     public DriverViewModel Driver { get; }
+
+    public MonitoringViewModel Monitoring { get; }
 
     public DiagnosticsViewModel Diagnostics { get; }
 

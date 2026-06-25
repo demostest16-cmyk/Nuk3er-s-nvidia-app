@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\NvForge.Core\NvForge.Core.csproj" />
     <ProjectReference Include="..\NvForge.Hardware\NvForge.Hardware.csproj" />
+    <ProjectReference Include="..\NvForge.Nvml\NvForge.Nvml.csproj" />
     <ProjectReference Include="..\NvForge.DriverCustomizer\NvForge.DriverCustomizer.csproj" />
   </ItemGroup>
 

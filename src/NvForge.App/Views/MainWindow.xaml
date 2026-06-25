@@ -83,7 +83,111 @@
                         </ItemsControl>
 
                         <TextBlock Style="{StaticResource Muted}" Margin="0,4,0,0"
-                                   Text="Live sensors (clocks, temps, fans, power) arrive in the next phase via NVML." />
+                                   Text="Open the Monitoring tab for live clocks, temps, fans, power and utilization." />
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- ===== Monitoring ===== -->
+            <TabItem Header="Monitoring" DataContext="{Binding Monitoring}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Live Monitoring" Style="{StaticResource H1}" Margin="0,0,0,4" />
+                        <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource Muted}" Margin="0,0,0,12" />
+
+                        <ComboBox ItemsSource="{Binding Devices}" SelectedIndex="{Binding SelectedDeviceIndex}"
+                                  Background="{StaticResource PanelAltBrush}" Foreground="#10130A"
+                                  Margin="0,0,0,12" Width="360" HorizontalAlignment="Left"
+                                  Visibility="{Binding Available, Converter={StaticResource BoolToVis}}" />
+
+                        <!-- Sensor tiles -->
+                        <UniformGrid Columns="3"
+                                     Visibility="{Binding Available, Converter={StaticResource BoolToVis}}">
+                            <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,12,12">
+                                <StackPanel>
+                                    <TextBlock Text="Temperature" Style="{StaticResource Muted}" FontSize="11" />
+                                    <TextBlock Text="{Binding TempText}" FontSize="24" FontWeight="SemiBold" />
+                                </StackPanel>
+                            </Border>
+                            <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,12,12">
+                                <StackPanel>
+                                    <TextBlock Text="GPU usage" Style="{StaticResource Muted}" FontSize="11" />
+                                    <TextBlock Text="{Binding UtilPercent, StringFormat={}{0:0}%}" FontSize="24" FontWeight="SemiBold" />
+                                    <ProgressBar Value="{Binding UtilPercent}" Maximum="100" Height="6" Margin="0,6,0,0"
+                                                 Foreground="{StaticResource AccentBrush}" Background="{StaticResource PanelAltBrush}" BorderThickness="0" />
+                                </StackPanel>
+                            </Border>
+                            <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,12">
+                                <StackPanel>
+                                    <TextBlock Text="Power" Style="{StaticResource Muted}" FontSize="11" />
+                                    <TextBlock Text="{Binding PowerText}" FontSize="20" FontWeight="SemiBold" />
+                                    <ProgressBar Value="{Binding PowerPercent}" Maximum="100" Height="6" Margin="0,6,0,0"
+                                                 Foreground="{StaticResource AccentBrush}" Background="{StaticResource PanelAltBrush}" BorderThickness="0" />
+                                </StackPanel>
+                            </Border>
+                            <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,12,12">
+                                <StackPanel>
+                                    <TextBlock Text="Core clock" Style="{StaticResource Muted}" FontSize="11" />
+                                    <TextBlock Text="{Binding CoreClockText}" FontSize="20" FontWeight="SemiBold" />
+                                </StackPanel>
+                            </Border>
+                            <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,12,12">
+                                <StackPanel>
+                                    <TextBlock Text="Memory clock" Style="{StaticResource Muted}" FontSize="11" />
+                                    <TextBlock Text="{Binding MemClockText}" FontSize="20" FontWeight="SemiBold" />
+                                </StackPanel>
+                            </Border>
+                            <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,12">
+                                <StackPanel>
+                                    <TextBlock Text="Fan" Style="{StaticResource Muted}" FontSize="11" />
+                                    <TextBlock Text="{Binding FanText}" FontSize="20" FontWeight="SemiBold" />
+                                </StackPanel>
+                            </Border>
+                        </UniformGrid>
+
+                        <!-- VRAM -->
+                        <Border Style="{StaticResource Card}"
+                                Visibility="{Binding Available, Converter={StaticResource BoolToVis}}">
+                            <StackPanel>
+                                <TextBlock Text="Video memory" Style="{StaticResource Muted}" FontSize="11" />
+                                <TextBlock Text="{Binding VramText}" FontSize="18" FontWeight="SemiBold" />
+                                <ProgressBar Value="{Binding MemUtilPercent}" Maximum="100" Height="6" Margin="0,6,0,0"
+                                             Foreground="{StaticResource AccentBrush}" Background="{StaticResource PanelAltBrush}" BorderThickness="0" />
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Utilization history sparkline -->
+                        <Border Style="{StaticResource Card}"
+                                Visibility="{Binding Available, Converter={StaticResource BoolToVis}}">
+                            <StackPanel>
+                                <TextBlock Text="GPU usage history" Style="{StaticResource H2}" Margin="0,0,0,8" />
+                                <Border Height="90" Background="{StaticResource PanelAltBrush}" CornerRadius="4" Padding="4" ClipToBounds="True">
+                                    <Polyline Points="{Binding UtilizationPoints}" Stretch="Fill"
+                                              Stroke="{StaticResource AccentBrush}" StrokeThickness="1.5" />
+                                </Border>
+                                <TextBlock Text="{Binding UtilStatsText}" Style="{StaticResource Muted}" FontSize="12" Margin="0,8,0,0" />
+                                <TextBlock Text="{Binding TempStatsText}" Style="{StaticResource Muted}" FontSize="12" />
+                                <TextBlock Text="{Binding PowerStatsText}" Style="{StaticResource Muted}" FontSize="12" />
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Controls -->
+                        <Border Style="{StaticResource Card}"
+                                Visibility="{Binding Available, Converter={StaticResource BoolToVis}}">
+                            <StackPanel>
+                                <WrapPanel>
+                                    <Button Content="Start / stop CSV log" Command="{Binding ToggleLoggingCommand}" />
+                                    <Button Content="Reset min/avg/max" Style="{StaticResource SecondaryButton}" Command="{Binding ResetStatsCommand}" />
+                                </WrapPanel>
+                                <TextBlock Text="{Binding LoggingStatus}" Style="{StaticResource Muted}" FontSize="12" Margin="0,8,0,0" />
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
