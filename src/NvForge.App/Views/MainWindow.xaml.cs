@@ -8,6 +8,6 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        Closed += (_, _) => (DataContext as MainViewModel)?.Monitoring.Stop();
+        Closed += (_, _) => (DataContext as MainViewModel)?.Shutdown();
     }
 }

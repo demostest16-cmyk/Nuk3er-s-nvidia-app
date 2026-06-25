@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NvForge.Core.Abstractions;
 using NvForge.Core.Models;
+using NvForge.Core.Tuning;
 using NvForge.DriverCustomizer;
 
 namespace NvForge.App.ViewModels;
@@ -18,6 +19,8 @@ public partial class MainViewModel : ObservableObject
         DriverDownloadService download,
         RegistryTweakService? tweakService,
         IGpuMonitor monitor,
+        IGpuTuner tuner,
+        OverclockProfileStore profiles,
         string appVersion)
     {
         AppVersion = appVersion;
@@ -26,6 +29,7 @@ public partial class MainViewModel : ObservableObject
         var primaryGpu = gpus.Count > 0 ? gpus[0] : null;
         Driver = new DriverViewModel(primaryGpu, locator, download, tweakService, simulated);
         Monitoring = new MonitoringViewModel(monitor);
+        Tuning = new TuningViewModel(tuner, profiles);
         Diagnostics = new DiagnosticsViewModel(gpus, source, elevated, simulated, appVersion);
 
         var banners = new List<string>();
@@ -54,7 +58,16 @@ public partial class MainViewModel : ObservableObject
 
     public MonitoringViewModel Monitoring { get; }
 
+    public TuningViewModel Tuning { get; }
+
     public DiagnosticsViewModel Diagnostics { get; }
+
+    /// <summary>Stops timers and releases NVML/NVAPI sessions on window close.</summary>
+    public void Shutdown()
+    {
+        Monitoring.Stop();
+        Tuning.Dispose();
+    }
 
     public bool ShowBanner { get; }
 

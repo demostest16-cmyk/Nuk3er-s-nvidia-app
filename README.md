@@ -3,9 +3,9 @@
 **All-in-one NVIDIA GPU manager for Windows** — for both desktop GPUs (RTX 4060)
 and laptop/mobile GPUs (RTX 5070 Ti Laptop GPU). Built in phases.
 
-> **Status: Phase 2** — GPU detection, driver customization, and **live
-> monitoring**. Overclocking and the full Windows-tweaks suite are on the
-> roadmap below.
+> **Status: Phase 3** — GPU detection, driver customization, live monitoring,
+> and **overclocking/tuning** (experimental — see note below). The full
+> Windows-tweaks suite is next on the roadmap.
 
 ## What it does today
 
@@ -14,6 +14,9 @@ and laptop/mobile GPUs (RTX 5070 Ti Laptop GPU). Built in phases.
 - **Live monitoring** (via NVML) — clocks, temperature, fan, power, GPU/memory
   utilization, and VRAM, updating every second with min/avg/max, a usage history
   graph, and optional CSV logging.
+- **Overclocking / tuning** (via NVAPI, *experimental*) — core/memory clock
+  offset sliders, capability-gated per GPU, with a 15-second test-then-auto-revert
+  safety and savable profiles.
 - **Driver Customization**
   - Finds your copy of **NVCleanstall** (or links you to the official download)
     and launches it.
@@ -56,9 +59,16 @@ In simulate mode all destructive actions are disabled — useful for a quick loo
 | Phase | Feature |
 |---|---|
 | 1 ✅ | Detection + driver customization |
-| 2 ✅ | Live monitoring (clocks, temps, fans, power) via NVML (this release) |
-| 3 | Overclocking / fan curves via the official NVAPI SDK + per-GPU profiles |
+| 2 ✅ | Live monitoring (clocks, temps, fans, power) via NVML |
+| 3 ✅ | Overclocking (core/memory offsets) via NVAPI + profiles — *experimental* (this release) |
 | 4 | Full Windows tweaks (HAGS, Ultimate Performance, MSI mode, NVCP settings) |
+
+> **Overclocking is experimental.** The NVAPI clock-offset write path is built
+> from the public NVAPI definitions but has not yet been validated on real
+> hardware. NVAPI rejects malformed requests cleanly (it validates struct
+> versions), and Apply auto-reverts after 15 seconds unless you confirm — but
+> please treat it as a beta feature and report what you see (use the Diagnostics
+> tab). Laptop GPUs are typically locked and will show as non-editable.
 
 ## Building from source
 

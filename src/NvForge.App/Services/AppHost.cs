@@ -7,9 +7,11 @@ using NvForge.Core.Gpu;
 using NvForge.Core.Models;
 using NvForge.Core.Tweaks;
 using NvForge.Core.Monitoring;
+using NvForge.Core.Tuning;
 using NvForge.DriverCustomizer;
 using NvForge.Hardware;
 using NvForge.Nvml;
+using NvForge.NvApi;
 using Serilog;
 
 namespace NvForge.App.Services;
@@ -56,12 +58,16 @@ public static class AppHost
         var download = new DriverDownloadService();
         var tweakService = new RegistryTweakService(new TweakBackupStore(BackupDirectory));
         IGpuMonitor monitor = simulated ? new MockGpuMonitor() : new NvmlGpuMonitor();
+        IGpuTuner tuner = simulated ? new MockGpuTuner() : new NvApiGpuTuner();
+        var profiles = new OverclockProfileStore(Path.Combine(DataDirectory, "profiles.json"));
 
         Log.Information(
-            "NvForge starting. Simulated={Simulated} Elevated={Elevated} GPUs={Count} Source={Source} Monitor={Monitor}",
-            simulated, elevated, gpus.Count, provider.SourceName, monitor.Available ? monitor.SourceName : "unavailable");
+            "NvForge starting. Simulated={Simulated} Elevated={Elevated} GPUs={Count} Source={Source} Monitor={Monitor} Tuner={Tuner}",
+            simulated, elevated, gpus.Count, provider.SourceName,
+            monitor.Available ? monitor.SourceName : "unavailable",
+            tuner.Available ? tuner.SourceName : "unavailable");
 
-        return new MainViewModel(gpus, provider.SourceName, elevated, simulated, locator, download, tweakService, monitor, AppVersion);
+        return new MainViewModel(gpus, provider.SourceName, elevated, simulated, locator, download, tweakService, monitor, tuner, profiles, AppVersion);
     }
 
     public static string AppVersion =>
