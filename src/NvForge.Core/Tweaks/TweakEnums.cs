@@ -6,6 +6,9 @@ public enum TweakOperationKind
     RegistryValue = 0,
     ScheduledTask = 1,
     Service = 2,
+
+    /// <summary>Activates a Windows power scheme; <c>Path</c> holds the template GUID to duplicate.</summary>
+    PowerScheme = 3,
 }
 
 /// <summary>

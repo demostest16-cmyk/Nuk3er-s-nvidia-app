@@ -3,9 +3,9 @@
 **All-in-one NVIDIA GPU manager for Windows** — for both desktop GPUs (RTX 4060)
 and laptop/mobile GPUs (RTX 5070 Ti Laptop GPU). Built in phases.
 
-> **Status: Phase 3** — GPU detection, driver customization, live monitoring,
-> and **overclocking/tuning** (experimental — see note below). The full
-> Windows-tweaks suite is next on the roadmap.
+> **Status: Phase 4** — GPU detection, driver customization, live monitoring,
+> overclocking/tuning (experimental), and a **reversible Windows performance
+> tweaks suite**. All four roadmap pillars are now in the app.
 
 ## What it does today
 
@@ -17,6 +17,10 @@ and laptop/mobile GPUs (RTX 5070 Ti Laptop GPU). Built in phases.
 - **Overclocking / tuning** (via NVAPI, *experimental*) — core/memory clock
   offset sliders, capability-gated per GPU, with a 15-second test-then-auto-revert
   safety and savable profiles.
+- **Windows performance tweaks** (all reversible, backed up first) — Hardware-
+  Accelerated GPU Scheduling, Ultimate Performance power plan, increased TDR
+  delay, disable Fullscreen Optimizations, disable Game DVR/Game Bar, and MSI
+  interrupt mode for your GPU.
 - **Driver Customization**
   - Finds your copy of **NVCleanstall** (or links you to the official download)
     and launches it.
@@ -60,8 +64,12 @@ In simulate mode all destructive actions are disabled — useful for a quick loo
 |---|---|
 | 1 ✅ | Detection + driver customization |
 | 2 ✅ | Live monitoring (clocks, temps, fans, power) via NVML |
-| 3 ✅ | Overclocking (core/memory offsets) via NVAPI + profiles — *experimental* (this release) |
-| 4 | Full Windows tweaks (HAGS, Ultimate Performance, MSI mode, NVCP settings) |
+| 3 ✅ | Overclocking (core/memory offsets) via NVAPI + profiles — *experimental* |
+| 4 ✅ | Windows tweaks: HAGS, Ultimate Performance, TDR, FSO, Game DVR, MSI mode (this release) |
+
+Possible follow-ups: NVIDIA Control Panel settings (low-latency / power mode) via
+NVAPI, fan-curve editor, power-limit control, and on-hardware validation of the
+overclocking write path.
 
 > **Overclocking is experimental.** The NVAPI clock-offset write path is built
 > from the public NVAPI definitions but has not yet been validated on real

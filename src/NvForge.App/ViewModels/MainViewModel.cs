@@ -30,6 +30,7 @@ public partial class MainViewModel : ObservableObject
         Driver = new DriverViewModel(primaryGpu, locator, download, tweakService, simulated);
         Monitoring = new MonitoringViewModel(monitor);
         Tuning = new TuningViewModel(tuner, profiles);
+        WindowsTweaks = new WindowsTweaksViewModel(tweakService, simulated, primaryGpu?.PnpDeviceId);
         Diagnostics = new DiagnosticsViewModel(gpus, source, elevated, simulated, appVersion);
 
         var banners = new List<string>();
@@ -59,6 +60,8 @@ public partial class MainViewModel : ObservableObject
     public MonitoringViewModel Monitoring { get; }
 
     public TuningViewModel Tuning { get; }
+
+    public WindowsTweaksViewModel WindowsTweaks { get; }
 
     public DiagnosticsViewModel Diagnostics { get; }
 

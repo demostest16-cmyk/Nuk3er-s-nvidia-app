@@ -380,6 +380,35 @@
                 </ScrollViewer>
             </TabItem>
 
+            <!-- ===== Windows Tweaks ===== -->
+            <TabItem Header="Windows Tweaks" DataContext="{Binding WindowsTweaks}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Windows Performance Tweaks" Style="{StaticResource H1}" Margin="0,0,0,4" />
+                        <TextBlock Style="{StaticResource Muted}" Margin="0,0,0,12"
+                                   Text="Each tweak is backed up before applying and can be reverted with Restore. Some require a reboot to take effect." />
+                        <ItemsControl ItemsSource="{Binding Tweaks}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}"
+                                            BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,10">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" />
+                                            <TextBlock Text="{Binding Description}" Style="{StaticResource Muted}" FontSize="12" Margin="0,4,0,8" />
+                                            <WrapPanel>
+                                                <Button Content="Apply" Command="{Binding ApplyCommand}" />
+                                                <Button Content="Restore" Style="{StaticResource SecondaryButton}" Command="{Binding RestoreCommand}" />
+                                            </WrapPanel>
+                                            <TextBlock Text="{Binding Status}" Style="{StaticResource Muted}" FontSize="12" Margin="0,8,0,0" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
             <!-- ===== Diagnostics ===== -->
             <TabItem Header="Diagnostics" DataContext="{Binding Diagnostics}">
                 <Grid>
@@ -413,14 +442,14 @@
                             <StackPanel>
                                 <TextBlock Text="What this is" Style="{StaticResource H2}" Margin="0,0,0,6" />
                                 <TextBlock Style="{StaticResource Muted}"
-                                           Text="NvForge is an all-in-one NVIDIA GPU manager being built in phases. This release (Phase 1) covers GPU detection and driver customization: it detects your GPU, recommends what to strip, helps you run NVCleanstall, and applies reversible privacy/update tweaks." />
+                                           Text="NvForge is an all-in-one NVIDIA GPU manager. It detects your GPU(s), customizes drivers (NVCleanstall + reversible privacy/update tweaks), monitors live sensors, applies experimental overclock offsets, and toggles reversible Windows performance tweaks — across both desktop and laptop GPUs." />
                             </StackPanel>
                         </Border>
                         <Border Style="{StaticResource Card}">
                             <StackPanel>
-                                <TextBlock Text="Coming next" Style="{StaticResource H2}" Margin="0,0,0,6" />
+                                <TextBlock Text="Possible follow-ups" Style="{StaticResource H2}" Margin="0,0,0,6" />
                                 <TextBlock Style="{StaticResource Muted}"
-                                           Text="• Live monitoring (clocks, temps, fans, power) via NVML&#x0a;• Overclocking / fan curves via the official NVAPI SDK&#x0a;• Full Windows performance tweaks (HAGS, power plans, MSI mode, control-panel settings)" />
+                                           Text="• NVIDIA Control Panel settings (low-latency / power mode) via NVAPI&#x0a;• Fan-curve editor and power-limit control&#x0a;• On-hardware validation of the overclocking write path" />
                             </StackPanel>
                         </Border>
                         <Border Style="{StaticResource Card}">

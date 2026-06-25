@@ -26,15 +26,18 @@ public sealed class RegistryTweakService
     private readonly TweakBackupStore _store;
     private readonly ScheduledTaskController _tasks;
     private readonly ServiceStartupController _services;
+    private readonly PowerSchemeController _power;
 
     public RegistryTweakService(
         TweakBackupStore store,
         ScheduledTaskController? tasks = null,
-        ServiceStartupController? services = null)
+        ServiceStartupController? services = null,
+        PowerSchemeController? power = null)
     {
         _store = store ?? throw new ArgumentNullException(nameof(store));
         _tasks = tasks ?? new ScheduledTaskController();
         _services = services ?? new ServiceStartupController();
+        _power = power ?? new PowerSchemeController();
     }
 
     /// <summary>True when NvForge has applied this tweak (a backup exists for it).</summary>
@@ -64,6 +67,9 @@ public sealed class RegistryTweakService
                         break;
                     case TweakOperationKind.Service:
                         ApplyService(op, backup, messages);
+                        break;
+                    case TweakOperationKind.PowerScheme:
+                        ApplyPowerScheme(op, backup, messages);
                         break;
                 }
             }
@@ -102,6 +108,10 @@ public sealed class RegistryTweakService
                     case TweakOperationKind.Service:
                         if (op.Existed && int.TryParse(SplitOriginalStart(op.OriginalData), out var start))
                             _services.SetStartType(op.Path, start);
+                        break;
+                    case TweakOperationKind.PowerScheme:
+                        if (op.Existed && !string.IsNullOrEmpty(op.OriginalData))
+                            _power.SetActive(op.OriginalData);
                         break;
                 }
             }
@@ -238,6 +248,28 @@ public sealed class RegistryTweakService
             _services.Stop(op.Path);
             messages.Add($"Service '{op.Path}' disabled and stopped.");
         }
+    }
+
+    // ---- power scheme ----
+
+    private void ApplyPowerScheme(TweakOperation op, TweakBackup backup, List<string> messages)
+    {
+        var current = _power.GetActiveSchemeGuid();
+        backup.Operations.Add(new TweakOperationBackup
+        {
+            Kind = TweakOperationKind.PowerScheme,
+            Path = op.Path,
+            Existed = current is not null,
+            OriginalData = current,
+        });
+
+        // Duplicate the template (Ultimate Performance) then activate it. If the
+        // duplicate call fails (e.g. already present), fall back to activating
+        // the template GUID directly.
+        var target = _power.DuplicateScheme(op.Path) ?? op.Path;
+        messages.Add(_power.SetActive(target)
+            ? $"Activated power scheme {target}."
+            : "Could not activate the power scheme.");
     }
 
     // ---- mapping / value (de)serialization ----

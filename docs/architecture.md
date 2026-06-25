@@ -80,13 +80,23 @@ Strategy:
 
 ## Roadmap
 
-- **Phase 1 (this release):** detection + driver customization (NVCleanstall
-  orchestration, reversible telemetry/update tweaks), app shell, CI.
-- **Phase 2:** live monitoring via NVML (charts, CSV logging).
-- **Phase 3:** overclocking/tuning via the official NVAPI SDK (native shim),
-  per-GPU profiles, runtime capability detection.
-- **Phase 4:** full Windows tweaks suite (HAGS, Ultimate Performance, TDR, MSI
-  mode, fullscreen-optimization, NVCP settings), all reversible.
+- **Phase 1 ✅** detection + driver customization (NVCleanstall orchestration,
+  reversible telemetry/update tweaks), app shell, CI.
+- **Phase 2 ✅** live monitoring via NVML (`NvForge.Nvml`): sensor tiles, usage
+  history sparkline, min/avg/max, CSV logging.
+- **Phase 3 ✅ (experimental)** overclocking via NVAPI (`NvForge.NvApi`). Note: a
+  **pure-C# `nvapi_QueryInterface` interop** is used instead of a C++ shim — same
+  capability, far simpler build, and equally validatable only on hardware. Core/
+  memory clock offsets, per-GPU profiles, capability gating, test-then-revert.
+- **Phase 4 ✅** Windows tweaks suite (HAGS, Ultimate Performance power plan, TDR
+  delay, fullscreen-optimization, Game DVR, MSI mode), all reversible via the
+  registry/task/service/power-scheme tweak engine.
+
+### Possible follow-ups
+
+NVIDIA Control Panel settings (low-latency / power mode) via NVAPI DRS, a
+fan-curve editor and power-limit control, an elevated broker process, and
+on-hardware validation of the NVAPI overclock write path.
 
 ### Future hardening
 
