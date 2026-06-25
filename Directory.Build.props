@@ -10,7 +10,7 @@
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <Product>NvForge</Product>
     <Company>NvForge</Company>
-    <Version>0.1.0</Version>
+    <Version>0.5.0</Version>
     <Authors>Nuk3er</Authors>
   </PropertyGroup>
 </Project>
